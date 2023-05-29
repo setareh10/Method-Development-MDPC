@@ -12,6 +12,7 @@ import time
 import pickle
 import numpy as np
 import sn_config as C
+from sn_config import mask_function
 import matplotlib.pyplot as plt
 from SN_semantic_ROIs import SN_semantic_ROIs
 from mne.stats import permutation_cluster_1samp_test
@@ -19,15 +20,6 @@ from mne.stats import permutation_cluster_1samp_test
 
 t_down_sampling = 25.0
 
-
-def mask_function(X, cut_off=None):
-    if cut_off is not None:
-        r, c = X.shape
-        for i in np.arange(0, r):
-            for j in np.arange(0, c):
-                if X[i, j] < cut_off:
-                    X[i, j] = cut_off
-    return X
 
 
 data_path = C.data_path
@@ -42,8 +34,7 @@ SN_ROI = SN_semantic_ROIs()
 
 s = time.time()
 
-labels = ["lATL", "rATL", "PTC", "IFG", "AG", "PVA"]
-
+labels = C.rois_labels
 
 ###########################################################
 
@@ -139,7 +130,8 @@ x_ld_ud_avg = np.zeros([18, 15, d, d])
 
 p = 0
 
-## Run this part for BV
+## Run this part for bvTLMDPC
+
 # for roi_y in np.arange(0, 6):
 #     for roi_x in np.arange(roi_y + 1, 6):
 
@@ -164,7 +156,8 @@ p = 0
 #         p += 1
 
 
-## Run this part for MV
+## Run this part for mvTLMDPC
+
 for roi_y in np.arange(0, 6):
     for roi_x in np.arange(roi_y + 1, 6):
 
