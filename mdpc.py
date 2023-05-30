@@ -106,7 +106,7 @@ class MultiVariateMDPC:
         kf = KFold(n_splits=self.mdpc.n_splits)
         for s, (self.train, self.test) in enumerate(kf.split(self.h_x, self.h_y)):
     
-            ev_s[s] = MDPC.mv_linear_regressor()
+            ev_s[s] = MultiVariateMDPC.mv_linear_regressor()
             
         ev_total = np.mean(ev_s)
     
