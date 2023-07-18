@@ -8,13 +8,20 @@ Created on Fri May 26 09:15:11 2023
 from __future__ import annotations
 import numpy as np
 from sklearn.linear_model import RidgeCV
-from sklearn.model_selection import cross_validate, KFold, GridSearchCV
+from sklearn.model_selection import cross_validate, KFold, GridSearchCV, RandomizedSearchCV
 from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import explained_variance_score
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
+from scikeras.wrappers import KerasRegressor
+
 from yellowbrick.cluster import KElbowVisualizer
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.callbacks import EarlyStopping
+
 
  
 class MDPC:
@@ -104,18 +111,18 @@ def bv_deep_nonlinear(self, units_l1, nl, nn, activation, optimizer):
     
     
     
-    def get_deep_model(input_shape, outut_shape, units, nl, nn, activation, optimizer):
+    def get_deep_model(input_shape, output_shape, units, nl, nn, activation, optimizer):
         
         model = Sequential()
         
-        model.add(Dense(units=units, input_shape=(input_shape,), activation=activation, ))
+        model.add(Dense(units=units, input_shape=(input_shape,), activation=activation))
+        model.add(Dropout(0.2))
       
         for i in range(nl):
-            
             model.add(Dense(units=nn, activation=activation))
-
+            model.add(Dropout(0.2))
        
-        model.add(Dense(units=outut_shape ))
+        model.add(Dense(units=output_shape ))
         model.compile(optimizer=optimizer, loss='mse')
         
         return model
