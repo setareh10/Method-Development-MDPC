@@ -80,10 +80,47 @@ class BiVariateMDPC:
         explained_var = np.max(mlp_reg.cv_results_["mean_test_score"])
         
         return explained_var
-    
-    
 
 
+def bv_deep_nonlinear(self, units_l1, nl, nn, activation, optimizer):
+        
+        kf = KFold(n_splits=self.mdpc.n_splits)
+        
+        params = {'nl':nl, 'nn':nn, 'activation':activation, 'omptimizer':optimizer}
+        
+        model = BiVariateMDPC.get_deep_model(self.v_x, self.v_y, units_l1, nl, nn, activation, optimizer)
+        
+        model = KerasRegressor(model)
+        
+        deep_reg = RandomizedSearchCV(model, params, scoring=self.mdpc.scoring, cv=kf)
+        
+        early_stopping = EarlyStopping(monitor='val_loss', patience=3) 
+
+        deep_reg.fit(self.x, self.y, callbacks=[early_stopping])
+                
+        explained_var = np.max(deep_reg.cv_results_["mean_test_score"])
+        
+        return explained_var
+    
+    
+    
+    def get_deep_model(input_shape, outut_shape, units, nl, nn, activation, optimizer):
+        
+        model = Sequential()
+        
+        model.add(Dense(units=units, input_shape=(input_shape,), activation=activation, ))
+      
+        for i in range(nl):
+            
+            model.add(Dense(units=nn, activation=activation))
+
+       
+        model.add(Dense(units=outut_shape ))
+        model.compile(optimizer=optimizer, loss='mse')
+        
+        return model
+    
+   
 
 class MultiVariateMDPC:
     
