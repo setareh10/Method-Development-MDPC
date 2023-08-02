@@ -116,11 +116,11 @@ def bv_deep_nonlinear(self, units_l1, nl, nn, activation, optimizer):
         model = Sequential()
         
         model.add(Dense(units=units, input_shape=(input_shape,), activation=activation))
-        model.add(Dropout(0.2))
+        model.add(Dropout(0.25))
       
         for i in range(nl):
             model.add(Dense(units=nn, activation=activation))
-            model.add(Dropout(0.2))
+            model.add(Dropout(0.25))
        
         model.add(Dense(units=output_shape ))
         model.compile(optimizer=optimizer, loss='mse')
